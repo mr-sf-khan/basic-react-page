@@ -1,0 +1,24 @@
+pipeline {
+  agent any
+  stages {
+    stage('Clone Repo') {
+      steps {
+        git 'https://github.com/GOLDSTEALTH/python_prac_apps.git'
+      }
+    }
+    stage('Build Docker Image') {
+      steps {
+        script {
+          dockerImage = docker.build("python_prac_app:latest")
+        }
+      }
+    }
+    stage('Run Docker Container') {
+      steps {
+        script {
+          dockerImage.run('-d -p 80:80')
+        }
+      }
+    }
+  }
+}
