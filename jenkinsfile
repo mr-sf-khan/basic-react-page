@@ -3,20 +3,23 @@ pipeline {
   stages {
     stage('Clone Repo') {
       steps {
-        git 'https://github.com/GOLDSTEALTH/python_prac_apps.git'
+        git 'https://github.com/mr-sf-khan/basic-react-page.git'
       }
     }
     stage('Build Docker Image') {
       steps {
         script {
-          dockerImage = docker.build("python_prac_app:latest")
+          dockerImage = docker.build("react_page:latest")
         }
       }
     }
     stage('Run Docker Container') {
       steps {
         script {
-          dockerImage.run('-d -p 80:80')
+          // Stop and remove any running container with the same name
+          sh "docker rm -f react_page_container || true"
+          // Run the new container
+          dockerImage.run('-d --name react_page_container -p 80:80')
         }
       }
     }
