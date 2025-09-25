@@ -1,0 +1,28 @@
+pipeline {
+  agent any
+  stages {
+    stage('Clone Repo') {
+      steps {
+        git branch: 'main', url: 'https://github.com/mr-sf-khan/basic-react-page.git'
+      }
+    }
+    stage('Build Docker Image') {
+      steps {
+        script {
+          dockerImage = docker.build("react_page:latest")
+        }
+      }
+    }
+    stage('Run Docker Container') {
+      steps {
+        script {
+          // Stop and remove any running container with the same name
+          sh "docker rm -f react_page_container || true"
+          // Run the new container
+          dockerImage.run('-d --name react_page_container -p 80:80')
+        }
+      }
+    }
+  }
+
+}
